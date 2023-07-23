@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>hello blog</title>
+      <link href="/2023/07/23/first-post/"/>
+      <url>/2023/07/23/first-post/</url>
+      
+        <content type="html"><![CDATA[<h3 id="关于博客本身"><a href="#关于博客本身" class="headerlink" title="关于博客本身"></a>关于博客本身</h3><p>新的博客搭建好了，用的框架是Hexo，托管在GitHub上，这样做的好处是不用去走复杂的备案工作，虽然牺牲了访问速度，但访问量不大，所以可以接受。主题使用的是<a href="https://github.com/probberechts/hexo-theme-cactus">cactus</a>，一个比较简洁的主题。</p><h3 id="为什么要写"><a href="#为什么要写" class="headerlink" title="为什么要写"></a>为什么要写</h3><p>刘未鹏老师有一篇文章<a href="http://mindhacks.cn/2009/02/15/why-you-should-start-blogging-now/">为什么你应该（从现在开始就）写博客</a>：</p><blockquote><p><strong>写一个博客有很多好处，却没有任何明显的坏处</strong>。</p><p><strong>用博客的形式来记录下你有价值的思考，会带来很多好处，却没有任何明显的坏处</strong>。</p></blockquote><p>文中列举了写博客的具体好处以及可能会遇到的一些问题并给出了解决方案，非常值得阅读</p><h3 id="关于内容"><a href="#关于内容" class="headerlink" title="关于内容"></a>关于内容</h3><p>主要以技术文章为主，可能也会有一些读书笔记。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hello World</title>
       <link href="/2023/07/21/hello-world/"/>
       <url>/2023/07/21/hello-world/</url>
