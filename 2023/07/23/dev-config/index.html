@@ -16,7 +16,7 @@
 <meta property="og:image" content="https://yongjay.github.io/images/dev-config/image-20230723123027340.png">
 <meta property="og:image" content="https://yongjay.github.io/images/dev-config/image-20230723124702271.png">
 <meta property="article:published_time" content="2023-07-23T03:57:56.000Z">
-<meta property="article:modified_time" content="2023-07-23T05:24:44.358Z">
+<meta property="article:modified_time" content="2023-07-23T05:31:50.574Z">
 <meta property="article:author" content="yongjay">
 <meta property="article:tag" content="环境搭建">
 <meta name="twitter:card" content="summary">
@@ -116,7 +116,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">命令行工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-number">3.</span> <span class="toc-text">软件包管理工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7Xcode"><span class="toc-number">3.1.</span> <span class="toc-text">编译工具Xcode</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">命令行工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-number">3.</span> <span class="toc-text">软件管理工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7Xcode"><span class="toc-number">4.</span> <span class="toc-text">编译工具Xcode</span></a></li></ol>
       </div>
     
   </span>
@@ -161,11 +161,11 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>刚从WSL下切换到Mac，记录一下Mac平台下的开发环境搭建</p>
-<h2 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h2><p>Mac自带的终端工具特性比较少，这里推荐使用Iterm2作为替代，支持不同的主题配色，以及丰富的分屏和显示效果。Mac上默认的shell是zsh，推荐安装<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh">oh-my-zsh</a>作为命令行工具，oh-my-zsh有丰富的主题以及插件，能够大大增加命令行下的工作效率，也可以配置出很好看的终端效果:</p>
+    <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>刚从WSL下切换到Mac，记录一下Mac平台下的开发环境搭建</p>
+<h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><p>Mac自带的终端工具特性比较少，这里推荐使用Iterm2作为替代，支持不同的主题配色，以及丰富的分屏和显示效果。Mac上默认的shell是zsh，推荐安装<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh">oh-my-zsh</a>作为命令行工具，oh-my-zsh有丰富的主题以及插件，能够大大增加命令行下的工作效率，也可以配置出很好看的终端效果:</p>
 <p><img src="/images/dev-config/image-20230723123027340.png" alt="image-20230723123027340"> </p>
 <p>这里使用的主题是<a target="_blank" rel="noopener" href="https://github.com/romkatv/powerlevel10k">powerlevel10k</a> ，有两个比较好用的插分别是命令高亮<a target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting</a>和命令补全<a target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-autosuggestions">zsh-autosuggestions</a>，这两个插件也是一些教程中推荐最多的，实际用下来确实很好用，使用方法参考主题官方文档以及插件官方文档。</p>
-<h2 id="软件包管理工具"><a href="#软件包管理工具" class="headerlink" title="软件包管理工具"></a>软件包管理工具</h2><p>使用<a target="_blank" rel="noopener" href="https://brew.sh/">brew</a>作为Mac下的包管理工具，brew官网给出了安装命令，但是在国内的网络环境下安装大概率会由于网络问题安装失败，可使用如下命令安装brew：</p>
+<h3 id="软件管理工具"><a href="#软件管理工具" class="headerlink" title="软件管理工具"></a>软件管理工具</h3><p>使用<a target="_blank" rel="noopener" href="https://brew.sh/">brew</a>作为Mac下的包管理工具，brew官网给出了安装命令，但是在国内的网络环境下安装大概率会由于网络问题安装失败，可使用如下命令安装brew：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ruby -e &quot;$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install)&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>上午脚本会自动替换中科大的源，不需要再手动替换软件下载源，安装好之后使用brew安装tree工具：</p>
@@ -200,7 +200,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">命令行工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-number">3.</span> <span class="toc-text">软件包管理工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7Xcode"><span class="toc-number">3.1.</span> <span class="toc-text">编译工具Xcode</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">命令行工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-number">3.</span> <span class="toc-text">软件管理工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7Xcode"><span class="toc-number">4.</span> <span class="toc-text">编译工具Xcode</span></a></li></ol>
       </div>
     
 
