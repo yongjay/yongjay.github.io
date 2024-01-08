@@ -124,7 +124,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -168,6 +168,81 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://yongjay.github.io/2023/12/12/spdlog-overview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/IMG_9627.jpeg">
+      <meta itemprop="name" content="yongjay">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yongjay's blog">
+      <meta itemprop="description" content="浮沙之上勿筑高台">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | yongjay's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/12/12/spdlog-overview/" class="post-title-link" itemprop="url">spdlog-overview</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-12-12 23:29:03" itemprop="dateCreated datePublished" datetime="2023-12-12T23:29:03+08:00">2023-12-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-16 15:40:34" itemprop="dateModified" datetime="2023-12-16T15:40:34+08:00">2023-12-16</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://yongjay.github.io/2023/12/09/spdlog-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -186,7 +261,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/12/09/spdlog-1/" class="post-title-link" itemprop="url">spdlog源码阅读（0）：示例代码分析</a>
+          <a href="/2023/12/09/spdlog-1/" class="post-title-link" itemprop="url">spdlog源码阅读</a>
         </h2>
 
         <div class="post-meta-container">
@@ -204,7 +279,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-12 22:49:26" itemprop="dateModified" datetime="2023-12-12T22:49:26+08:00">2023-12-12</time>
+      <time title="Modified: 2023-12-18 22:42:06" itemprop="dateModified" datetime="2023-12-18T22:42:06+08:00">2023-12-18</time>
     </span>
 
   
@@ -217,8 +292,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p><a target="_blank" rel="noopener" href="https://github.com/gabime/spdlog">spdlog</a>是开源社区比较有名的跨平台的c++日志库，即支持<code>head-only</code>也支持编译为库，本文是spdlog源码阅读的第一篇。</p>
-<p>代码下载和编译在仓库中有详细的讲解，此处不再赘述，编译完成之后运行示例代码如图：</p>
+          <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><a target="_blank" rel="noopener" href="https://github.com/gabime/spdlog">spdlog</a>是开源社区比较有名的跨平台的现代c++日志库，包含了c++17的特性，可使用<code>head-only</code>也可以编译为库，支持丰富的格式输出，用户也可以自定义格式，此外也支持异步log等等丰富的特性，本文记录spdlog源码阅读过程中的一些理解。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/12/09/spdlog-1/#more" rel="contents">
@@ -455,7 +529,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-12 22:47:28" itemprop="dateModified" datetime="2023-12-12T22:47:28+08:00">2023-12-12</time>
+      <time title="Modified: 2024-01-08 23:23:24" itemprop="dateModified" datetime="2024-01-08T23:23:24+08:00">2024-01-08</time>
     </span>
 
   
@@ -468,7 +542,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="关于博客本身"><a href="#关于博客本身" class="headerlink" title="关于博客本身"></a>关于博客本身</h3><p>新的博客搭建好了，用的框架是Hexo，托管在GitHub上，这样做的好处是不用去走复杂的备案工作，虽然牺牲了访问速度，但访问量不大，所以可以接受。主题使用的是<a target="_blank" rel="noopener" href="https://github.com/probberechts/hexo-theme-cactus">cactus</a>，一个比较简洁的主题。</p>
+          <h3 id="关于博客本身"><a href="#关于博客本身" class="headerlink" title="关于博客本身"></a>关于博客本身</h3><p>新的博客搭建好了，用的框架是Hexo，托管在GitHub上，这样做的好处是不用去走复杂的备案工作，虽然牺牲了访问速度，但想必不会有太多人访问到:D，因此可以接受。主题使用的是Next，一个比较简洁的主题。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/07/23/first-post/#more" rel="contents">
@@ -503,7 +577,7 @@
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2023</span>
+    <span itemprop="copyrightYear">2024</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
