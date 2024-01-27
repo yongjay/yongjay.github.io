@@ -124,13 +124,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -159,6 +159,89 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://yongjay.github.io/2024/01/27/copy-elision/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/IMG_9627.jpeg">
+      <meta itemprop="name" content="yongjay">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yongjay's blog">
+      <meta itemprop="description" content="浮沙之上勿筑高台">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | yongjay's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/01/27/copy-elision/" class="post-title-link" itemprop="url">C++中的拷贝消除和返回值优化</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-01-27 15:51:29 / Modified: 20:21:51" itemprop="dateCreated datePublished" datetime="2024-01-27T15:51:29+08:00">2024-01-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>**拷贝消除(copy elision)<strong>指的是一项可以避免调用拷贝或移动操作的编译器优化措施，，C++通过</strong>RVO(Return Value Optimization)<strong>和</strong>NRVO(Named Return Value Optimization)**来达到这一点，RVO表示编译器在函数返回值时可以避免创建临时对象，NRVO表示编译器在需要返回一个具名的局部对象时可以避免调用该对象的拷贝或构造函数。先来看一段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">Point</span>() = <span class="keyword">default</span>;</span><br><span class="line">    <span class="built_in">Point</span>(<span class="type">const</span> Point&amp; rhs)</span><br><span class="line">    &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;copy constructor.\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Point <span class="title">func_rvo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Point&#123;&#125;;  <span class="comment">// 1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Point <span class="title">func_nrvo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	  Point ret;</span><br><span class="line">  	<span class="keyword">return</span> ret;      <span class="comment">// 2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span>, <span class="type">char</span>**)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Point a = <span class="built_in">func_rvo</span>();  <span class="comment">// 3</span></span><br><span class="line">  	Point b = <span class="built_in">func_nrvo</span>(); <span class="comment">// 4</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以先猜猜看这段代码使用不同C++版本编译之后的输出是什么？我们先使用C++14编译并运行，输出为空，这里是编译器进行优化了，可以在编译时加上<code>-fno-elide-constructors</code>参数，表示不希望进行拷贝消除，输出为：</p>
+<blockquote>
+<p>copy constructor.<br>copy constructor.<br>copy constructor.<br>copy constructor.</p>
+</blockquote>
+<p>在代码中①②③④中都调用了拷贝函数，很好理解，如果不加额外的编译参数，就不对进行拷贝，这就是编译进行了拷贝消除，在①处发生了RVO，在2处发生了NRVO。</p>
+<p>再使用C++17编译，依旧加上<code>-fno-elide-constructors</code>编译参数，输出为：</p>
+<blockquote>
+<p>copy constructor.</p>
+</blockquote>
+<p>可以发现使用C++17进行编译时，只调用了一次Point的构造函数，为什么？不是已经增加了<code>-fno-elide-constructors</code>吗？而且为什么只调用了一次拷贝构造函数，又是哪里调用的？</p>
+<p>首先，从C++17标准开始，RVO对于编译器不再是建议，而被<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/copy_elision">强制要求保证</a>，也就是说从C++17开始，编译器不理我们的<code>-fno-elide-constructors</code>参数了。那既然编译器选择了优化，那为啥还是调用了一次拷贝构造函数？这就是第二个问题，答案是标准规定RVO是一定要保证的，但NRVO不是，哪怕在C++17中，NRVO也不是一定被保证的，而代码中②就是NRVO，所以拷贝函数是在这里被调用的。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
