@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>2024读书书单</title>
+      <link href="/2024/01/30/reading-list2024/"/>
+      <url>/2024/01/30/reading-list2024/</url>
+      
+        <content type="html"><![CDATA[<h3 id="《Modern-CPP-Programming》"><a href="#《Modern-CPP-Programming》" class="headerlink" title="《Modern-CPP-Programming》"></a>《Modern-CPP-Programming》</h3><p>严格来讲不是一本书，根据作者的介绍是一门<a href="https://github.com/federico-busato/Modern-CPP-Programming">公开课程</a>，这门课程是针对那些已经熟悉C语言和面向对象编程，并希望提高到C++编程熟练水平的人群。作者以PDF的形式维护在GitHub上，包含了1000多页PPT，涵盖了工具、编码约定、项目组织和代码优化等内容。</p><h3 id="《马斯克传》"><a href="#《马斯克传》" class="headerlink" title="《马斯克传》"></a>《马斯克传》</h3><span id="more"></span><p>持续阅读中……</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 读书笔记 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>C++中的拷贝消除和返回值优化</title>
       <link href="/2024/01/27/copy-elision/"/>
       <url>/2024/01/27/copy-elision/</url>
@@ -14,7 +33,7 @@
       
         <tags>
             
-            <tag> C++ C++17 </tag>
+            <tag> C++ , C++17 </tag>
             
         </tags>
       
