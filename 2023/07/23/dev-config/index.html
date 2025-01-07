@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+<meta name="theme-color" content="#808080" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#808080" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/deadpool.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/deadpool.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/deadpool.png">
-  <link rel="mask-icon" href="/images/deadpool.svg" color="#222">
+  <link rel="mask-icon" href="/images/deadpool.svg" color="#808080">
 
 <link rel="stylesheet" href="/css/main.css">
 
 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"yongjay.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yongjay.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.22.0","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="前言刚从WSL下切换到Mac，记录一下Mac平台下的开发环境搭建 命令行工具Mac自带的终端工具特性比较少，这里推荐使用Iterm2作为替代，支持不同的主题配色，以及丰富的分屏和显示效果。Mac上默认的shell是zsh，推荐安装oh-my-zsh作为命令行工具，oh-my-zsh有丰富的主题以及插件，能够大大增加命令行下的工作效率，也可以配置出很好看的终端效果:">
 <meta property="og:type" content="article">
@@ -38,7 +38,6 @@
 
 
 <link rel="canonical" href="https://yongjay.github.io/2023/07/23/dev-config/">
-
 
 
 <script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yongjay.github.io/2023/07/23/dev-config/","path":"2023/07/23/dev-config/","title":"Mac开发环境搭建"}</script>
@@ -91,7 +90,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
   </ul>
 </nav>
 
@@ -144,7 +143,7 @@
 </div>
   <div class="links-of-author animated">
       <span class="links-of-author-item">
-        <a href="https://github.com/yongjay" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yongjay" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3lvbmdqYXk=" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yongjay"><i class="fab fa-github fa-fw"></i></span>
       </span>
       <span class="links-of-author-item">
         <a href="/yongjaylu@gmail.com" title="E-Mail → yongjaylu@gmail.com" rel="noopener me"><i class="fa fa-envelope fa-fw"></i></a>
@@ -225,12 +224,12 @@
     
     
     <div class="post-body" itemprop="articleBody"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>刚从WSL下切换到Mac，记录一下Mac平台下的开发环境搭建</p>
-<h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><p>Mac自带的终端工具特性比较少，这里推荐使用Iterm2作为替代，支持不同的主题配色，以及丰富的分屏和显示效果。Mac上默认的shell是zsh，推荐安装<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh">oh-my-zsh</a>作为命令行工具，oh-my-zsh有丰富的主题以及插件，能够大大增加命令行下的工作效率，也可以配置出很好看的终端效果:</p>
+<h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><p>Mac自带的终端工具特性比较少，这里推荐使用Iterm2作为替代，支持不同的主题配色，以及丰富的分屏和显示效果。Mac上默认的shell是zsh，推荐安装<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29obXl6c2gvb2hteXpzaA==">oh-my-zsh<i class="fa fa-external-link-alt"></i></span>作为命令行工具，oh-my-zsh有丰富的主题以及插件，能够大大增加命令行下的工作效率，也可以配置出很好看的终端效果:</p>
 <span id="more"></span>
 
 <p><img src="/images/dev-config/image-20230723123027340.png" alt="image-20230723123027340"> </p>
-<p>这里使用的主题是<a target="_blank" rel="noopener" href="https://github.com/romkatv/powerlevel10k">powerlevel10k</a> ，有两个比较好用的插分别是命令高亮<a target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting</a>和命令补全<a target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-autosuggestions">zsh-autosuggestions</a>，这两个插件也是一些教程中推荐最多的，实际用下来确实很好用，使用方法参考主题官方文档以及插件官方文档。</p>
-<h3 id="软件管理工具"><a href="#软件管理工具" class="headerlink" title="软件管理工具"></a>软件管理工具</h3><p>使用<a target="_blank" rel="noopener" href="https://brew.sh/">brew</a>作为Mac下的包管理工具，brew官网给出了安装命令，但是在国内的网络环境下安装大概率会由于网络问题安装失败，可使用如下命令安装brew：</p>
+<p>这里使用的主题是<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3JvbWthdHYvcG93ZXJsZXZlbDEwaw==">powerlevel10k<i class="fa fa-external-link-alt"></i></span> ，有两个比较好用的插分别是命令高亮<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3pzaC11c2Vycy96c2gtc3ludGF4LWhpZ2hsaWdodGluZw==">zsh-syntax-highlighting<i class="fa fa-external-link-alt"></i></span>和命令补全<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3pzaC11c2Vycy96c2gtYXV0b3N1Z2dlc3Rpb25z">zsh-autosuggestions<i class="fa fa-external-link-alt"></i></span>，这两个插件也是一些教程中推荐最多的，实际用下来确实很好用，使用方法参考主题官方文档以及插件官方文档。</p>
+<h3 id="软件管理工具"><a href="#软件管理工具" class="headerlink" title="软件管理工具"></a>软件管理工具</h3><p>使用<span class="exturl" data-url="aHR0cHM6Ly9icmV3LnNoLw==">brew<i class="fa fa-external-link-alt"></i></span>作为Mac下的包管理工具，brew官网给出了安装命令，但是在国内的网络环境下安装大概率会由于网络问题安装失败，可使用如下命令安装brew：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ruby -e &quot;$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install)&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>上午脚本会自动替换中科大的源，不需要再手动替换软件下载源，安装好之后使用brew安装tree工具：</p>
@@ -246,6 +245,20 @@
     
 
     <footer class="post-footer">
+          <div class="reward-container">
+  <div>Buy me a coffee</div>
+  <button>
+    Donate
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.JPG" alt="yongjay WeChat Pay">
+        <span>WeChat Pay</span>
+      </div>
+
+  </div>
+</div>
+
           <div class="post-tags">
               <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag"><i class="fa fa-tag"></i> 环境搭建</a>
           </div>
@@ -273,6 +286,7 @@
 
 
 
+    <div class="comments gitalk-container"></div>
 </div>
   </main>
 
@@ -280,7 +294,7 @@
     <div class="footer-inner">
 
   <div class="copyright">
-    &copy; 
+    &copy; 2023 – 
     <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
@@ -292,6 +306,12 @@
   </footer>
 
   
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
   <div class="reading-progress-bar"></div>
 
 <noscript>
@@ -301,7 +321,7 @@
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
 
   
 
@@ -315,6 +335,10 @@
 
 
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"yongjay","repo":"blog-comment","client_id":"Ov23liSqcNRTiZQzcibG","client_secret":"f1ec4cdaec9ff9ef9e752cba7e2b5dd8a418a16f","admin_user":"yongjay","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"82cc57fc2e2fbee8306aae7168f06706"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>
