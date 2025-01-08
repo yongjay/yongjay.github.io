@@ -1,117 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-  
-    
-    <entry>
-      <title>2024读书书单</title>
-      <link href="/2024/01/30/reading-list2024/"/>
-      <url>/2024/01/30/reading-list2024/</url>
-      
-        <content type="html"><![CDATA[<h3 id="《Modern-CPP-Programming》"><a href="#《Modern-CPP-Programming》" class="headerlink" title="《Modern-CPP-Programming》"></a>《Modern-CPP-Programming》</h3><p>严格来讲不是一本书，根据作者的介绍是一门<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ZlZGVyaWNvLWJ1c2F0by9Nb2Rlcm4tQ1BQLVByb2dyYW1taW5n">公开课程<i class="fa fa-external-link-alt"></i></span>，这门课程是针对那些已经熟悉C语言和面向对象编程，并希望提高到C++编程熟练水平的人群。作者以PDF的形式维护在GitHub上，包含了1000多页PPT，涵盖了工具、编码约定、项目组织和代码优化等内容。</p><h3 id="《马斯克传》"><a href="#《马斯克传》" class="headerlink" title="《马斯克传》"></a>《马斯克传》</h3><span id="more"></span><p>持续阅读中……</p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 读书笔记 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>C++中的拷贝消除和返回值优化</title>
-      <link href="/2024/01/27/copy-elision/"/>
-      <url>/2024/01/27/copy-elision/</url>
-      
-        <content type="html"><![CDATA[<p>拷贝消除(copy elision)指的是一项可以避免调用拷贝或移动操作的编译器优化措施，C++通过RVO(Return Value Optimization)和NRVO(Named Return Value Optimization)来达到这一点，RVO表示编译器在函数返回值时可以避免创建临时对象，NRVO表示编译器在需要返回一个具名的局部对象时可以避免调用该对象的拷贝或构造函数。先来看一段代码：</p><span id="more"></span><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">Point</span>() = <span class="keyword">default</span>;</span><br><span class="line">    <span class="built_in">Point</span>(<span class="type">const</span> Point&amp; rhs)</span><br><span class="line">    &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;copy constructor.\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Point <span class="title">func_rvo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Point&#123;&#125;;  <span class="comment">// 1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Point <span class="title">func_nrvo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  Point ret;</span><br><span class="line">  <span class="keyword">return</span> ret;      <span class="comment">// 2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span>, <span class="type">char</span>**)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Point a = <span class="built_in">func_rvo</span>();  <span class="comment">// 3</span></span><br><span class="line">  Point b = <span class="built_in">func_nrvo</span>(); <span class="comment">// 4</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>可以先猜猜看这段代码使用不同C++版本编译之后的输出是什么？我们先使用C++14编译并运行，输出为空，这里是编译器进行优化了，可以在编译时加上<code>-fno-elide-constructors</code>参数，表示不希望进行拷贝消除，输出为：</p><blockquote><p>copy constructor.<br>copy constructor.<br>copy constructor.<br>copy constructor.</p></blockquote><p>在代码中①②③④中都调用了拷贝函数，很好理解，如果不加额外的编译参数，就不对进行拷贝，这就是编译进行了拷贝消除，在①处发生了RVO，在2处发生了NRVO。</p><p>再使用C++17编译，依旧加上<code>-fno-elide-constructors</code>编译参数，输出为：</p><blockquote><p>copy constructor.</p></blockquote><p>可以发现使用C++17进行编译时，只调用了一次Point的构造函数，为什么？不是已经增加了<code>-fno-elide-constructors</code>吗？而且为什么只调用了一次拷贝构造函数，又是哪里调用的？</p><p>首先，从C++17标准开始，RVO对于编译器不再是建议，而被<span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2xhbmd1YWdlL2NvcHlfZWxpc2lvbg==">强制要求保证<i class="fa fa-external-link-alt"></i></span>，也就是说从C++17开始，编译器不理我们的<code>-fno-elide-constructors</code>参数了。那既然编译器选择了优化，那为啥还是调用了一次拷贝构造函数？这就是第二个问题，答案是标准规定RVO是一定要保证的，但NRVO不是，哪怕在C++17中，NRVO也不是一定被保证的，而代码中②就是NRVO，所以拷贝函数是在这里被调用的。</p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> C++ </tag>
-            
-            <tag> C++17 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>spdlog源码阅读</title>
-      <link href="/2023/12/09/spdlog-1/"/>
-      <url>/2023/12/09/spdlog-1/</url>
-      
-        <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dhYmltZS9zcGRsb2c=">spdlog<i class="fa fa-external-link-alt"></i></span>是开源社区比较有名的跨平台的现代c++日志库，包含了c++17的特性，可使用<code>head-only</code>也可以编译为库，支持丰富的格式输出，用户也可以自定义格式，此外也支持异步log等等丰富的特性，本文记录spdlog源码阅读过程中的一些理解。</p><span id="more"></span><h3 id="代码下载和编译"><a href="#代码下载和编译" class="headerlink" title="代码下载和编译"></a>代码下载和编译</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">clone</span> https://github.com/gabime/spdlog.git</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> spdlog &amp;&amp; <span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cmake .. &amp;&amp; make -j</span></span><br></pre></td></tr></table></figure><p>CMakeLists.txt中有很多自定义变量，可以根据需求修改使用。编译之后运行示例应该可以看到如下输出：</p><p><img src="/../images/spdlog-1/Screenshot%202023-12-09%20at%2019.40.18.png" alt="Screenshot 2023-12-09 at 19.40.18"></p><p>另外，spdlog支持使用tcp和udp发送log到远程主机，示例代码中加入了udp测试的log，可以使用nc命令启动一个服务器来验证，默认端口号为11091。</p><p>项目本身的示例没有输出到tcp服务器的示例，我们可以写一个用来初步熟悉spdlog的使用，在spdlog&#x2F;example&#x2F;example.cpp中增加如下代码：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;spdlog/sinks/tcp_sink.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tcp_example</span><span class="params">()</span> </span>&#123; </span><br><span class="line">    spdlog::<span class="function">sinks::tcp_sink_config <span class="title">cfg</span><span class="params">(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">11092</span>)</span></span>;</span><br><span class="line">    <span class="keyword">auto</span> my_logger = spdlog::<span class="built_in">tcp_logger_mt</span>(<span class="string">&quot;tcplog&quot;</span>, cfg);</span><br><span class="line">    my_logger-&gt;<span class="built_in">set_level</span>(spdlog::level::debug);</span><br><span class="line">    my_logger-&gt;<span class="built_in">info</span>(<span class="string">&quot;hello tcp logger&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>在spdlog&#x2F;include&#x2F;spdlog&#x2F;sinks&#x2F;tcp_sink.h中命令spdlog命名空间之内sinks命名空间以外增加以下代码：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Factory = spdlog::synchronous_factory&gt;</span><br><span class="line"><span class="keyword">inline</span> std::shared_ptr&lt;logger&gt; <span class="built_in">tcp_logger_mt</span>(<span class="type">const</span> std::string &amp;logger_name,</span><br><span class="line">                                             sinks::tcp_sink_config skin_config) &#123;</span><br><span class="line">    <span class="keyword">return</span> Factory::<span class="keyword">template</span> <span class="built_in">create</span>&lt;sinks::tcp_sink_mt&gt;(logger_name, skin_config);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>其中，cfg用来配置tcp的ip和端口，tcp_logger_mt是一个工厂函数，用来生成logger对象，参数是logger的名字以及tcp的配置，create是一个构建同步logger的工厂函数，会在后面的文章中详细分析。</p><p>编译之后（以上代码省略了主函数的调用），使用nc命令模拟tcp服务器接受log，结果如下：</p><p><img src="/../images/spdlog-1/Screenshot%202023-12-09%20at%2020.51.53.png" alt="Screenshot 2023-12-09 at 20.51.53"></p><p>spdlog提供了默认的logger，可以直接通过<code>spdlog::info</code>或者<code>spdlog::debug</code>等等使用默认的logger直接输出需要的log。</p><h3 id="源码结构概览"><a href="#源码结构概览" class="headerlink" title="源码结构概览"></a>源码结构概览</h3><p>spdlog是一个head-only的库，include下的文件结构以及主要的功能如下：</p><p>.<br>└── spdlog<br>    ├── async.h &#x2F;&#x2F; 异步logger的生成工厂<br>    ├── async_logger-inl.h     &#x2F;&#x2F; 异步logger实现<br>    ├── async_logger.h   &#x2F;&#x2F; 异步logger定义<br>    ├── cfg&#x2F;&#x2F; 包含一些全局配置，例如logger的等级设定<br>    ├── common-inl.h<br>    ├── common.h  &#x2F;&#x2F; 一些跨平台的条件设置以及一些枚举类型的定义<br>    ├── details &#x2F;&#x2F; 包含了spdlog中使用到的基础功能，例如线程池、全局注册器等等<br>    ├── fmt      &#x2F;&#x2F; 包含fmt库的内容，fmt是一个格式化输出的开源库<br>    ├── formatter.h&#x2F;&#x2F; 格式对象<br>    ├── fwd.h<br>    ├── logger-inl.h<br>    ├── logger.h      &#x2F;&#x2F; logger基类的定义<br>    ├── pattern_formatter-inl.h<br>    ├── pattern_formatter.h  &#x2F;&#x2F; 包含一些格式的定义<br>    ├── sinks   &#x2F;&#x2F; 输出接收器集合，包含了各种类型的输出接收器<br>    ├── spdlog-inl.h<br>    ├── spdlog.h    &#x2F;&#x2F; 一些全局接口的定义<br>    ├── stopwatch.h      &#x2F;&#x2F; spdlog的秒表支持<br>    ├── tweakme.h&#x2F;&#x2F; 提供性能提升的配置，可由用户自定义<br>    └── version.h   &#x2F;&#x2F; spdlog的版本信息</p><h2 id="核心功能模块"><a href="#核心功能模块" class="headerlink" title="核心功能模块"></a>核心功能模块</h2><p><img src="/../images/spdlog-1/spdlog-2824722.png" alt="spdlog"></p><h3 id="概念介绍"><a href="#概念介绍" class="headerlink" title="概念介绍"></a>概念介绍</h3><h4 id="logger"><a href="#logger" class="headerlink" title="logger"></a>logger</h4><p>logger是spdlog中的重要概念，logger包含了一个或者多个sink对象，并且每个logger可以定义自身的logger等级,用户可以通过logger对象设置其中包含的sink的格式和log等级。</p><h5 id="默认logger"><a href="#默认logger" class="headerlink" title="默认logger"></a>默认logger</h5><p>可以理解为sink的包装器，分别有同步logger和异步logger，logger都有唯一的名字来标识自身（除了<strong>默认logger</strong>），<strong>默认logger</strong>是spdlog提供的一个特殊的logger，目的是使用户不必创建logger就能使用log功能，我们使用spdlog::info等接口时就会调用默认logger来打印，如果默认的logger不符合你的需求，也可以使用全局注册器的单例来设置默认的logger：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spdlog::details::registry::<span class="built_in">instance</span>().<span class="built_in">set_default_logger</span>(std::shared_ptr&lt;logger&gt; new_default_logger)</span><br></pre></td></tr></table></figure><h5 id="logger的管理"><a href="#logger的管理" class="headerlink" title="logger的管理"></a>logger的管理</h5><p>如类图所见，全局注册器（registry是个单例类，主要的职责有两个，一是负责管理所有的logger；二是负责管理spdlog的全局设置，例如全局的log等级以及全局的formatter。logger的创建有多种方式，可以使用spdlog提供的工厂方法来创建，也可以手动创建。</p><p>使用工厂创建：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Create and return a shared_ptr to a multithreaded console logger.</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;spdlog/sinks/stdout_color_sinks.h&quot;</span></span></span><br><span class="line"><span class="keyword">auto</span> console = spdlog::<span class="built_in">stdout_color_mt</span>(<span class="string">&quot;some_unique_name&quot;</span>);</span><br></pre></td></tr></table></figure><p>手动创建：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> sink = std::<span class="built_in">make_shared</span>&lt;spdlog::sinks::stdout_sink_mt&gt;();</span><br><span class="line"><span class="keyword">auto</span> my_logger = std::<span class="built_in">make_shared</span>&lt;spdlog::logger&gt;(<span class="string">&quot;mylogger&quot;</span>, sink);</span><br><span class="line"></span><br><span class="line">spdlog::<span class="built_in">register_logger</span>(my_logger);</span><br></pre></td></tr></table></figure><p>使用工厂创建的logger会自动注册到registry中，手动创建的logger需要自行注册，spdlog支持创建同步和异步logger，对应的工厂方法分别在synchronous_factory.h和async.h中。</p><p>对logger的操作都在registry中，为了方便使用做了一层封装，可以直接使用<code>spdlog::get(logger_name)</code>来获取已经创建的logger，或者使用<code>spdlog::drop(logger_name)</code>来删除一个logger。</p><h4 id="formatter"><a href="#formatter" class="headerlink" title="formatter"></a>formatter</h4><p>格式器，包含了log输出的格式，formatter底层使用了开源库<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ZtdGxpYi9mbXQ=">fmt<i class="fa fa-external-link-alt"></i></span>的格式输出。</p><h4 id="sink"><a href="#sink" class="headerlink" title="sink"></a>sink</h4><p>日志接收器，执行打印动作的实体，从类图中可以看到，sink是一个抽象类，定义了sink对象接口，在spdlog中sink对象被设计为不单独出现，依附于logger对象，因此和logger的关系为组合关系。我们可以看到在sink的派生类中基本都实现了工厂方法的包装函数。<code>spdlog/sinks</code>中提供了多种不同的sink，用户也可以基于sink提供的接口自定义符合需求的sink。</p><h3 id="涉及到的设计模式"><a href="#涉及到的设计模式" class="headerlink" title="涉及到的设计模式"></a>涉及到的设计模式</h3><h4 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h4><p>spdlog中，全局注册器registry被实现为单例模式，方便用户使用一些全局的方法，<span class="exturl" data-url="aHR0cHM6Ly9pc29jcHAuZ2l0aHViLmlvL0NwcENvcmVHdWlkZWxpbmVzL0NwcENvcmVHdWlkZWxpbmVzI2kzLWF2b2lkLXNpbmdsZXRvbnM=">其实单例有一些弊端<i class="fa fa-external-link-alt"></i></span>，但是有时候使用起来很方便又不得不使用，registry的单例实现是现在比较常规的做法：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">singleton</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> singleton&amp; <span class="title">instance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">static</span> singleton instance_;</span><br><span class="line">        <span class="keyword">return</span> instance_;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">singleton</span>(<span class="type">const</span> singleton &amp;rhs) = <span class="keyword">delete</span>;</span><br><span class="line">    singleton &amp;<span class="keyword">operator</span>=(<span class="type">const</span> singleton &amp;rhs) = <span class="keyword">delete</span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line">    ~<span class="built_in">singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>得益于c++11推出的内存模型，静态变量的线程安全性由编译器保证，我们可以不用使用锁来保证单例对象的唯一性。</p><h4 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h4><p>在spdlog中，同步logger和异步logger的创建都使用了工厂方法模式来实现：</p><p>同步logger工厂：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">synchronous_factory</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Sink, <span class="keyword">typename</span>... SinkArgs&gt;</span><br><span class="line">    <span class="function"><span class="type">static</span> std::shared_ptr&lt;spdlog::logger&gt; <span class="title">create</span><span class="params">(std::string logger_name, SinkArgs &amp;&amp;...args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> sink = std::<span class="built_in">make_shared</span>&lt;Sink&gt;(std::forward&lt;SinkArgs&gt;(args)...);</span><br><span class="line">        <span class="keyword">auto</span> new_logger = std::<span class="built_in">make_shared</span>&lt;spdlog::logger&gt;(std::<span class="built_in">move</span>(logger_name), std::<span class="built_in">move</span>(sink));</span><br><span class="line">        details::registry::<span class="built_in">instance</span>().<span class="built_in">initialize_logger</span>(new_logger);</span><br><span class="line">        <span class="keyword">return</span> new_logger;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>异步logger工厂：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;async_overflow_policy OverflowPolicy = async_overflow_policy::block&gt;</span><br><span class="line"><span class="keyword">struct</span> async_factory_impl &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Sink, <span class="keyword">typename</span>... SinkArgs&gt;</span><br><span class="line">    <span class="type">static</span> std::shared_ptr&lt;async_logger&gt; <span class="built_in">create</span>(std::string logger_name, SinkArgs &amp;&amp;...args) &#123;</span><br><span class="line">        <span class="keyword">auto</span> &amp;registry_inst = details::registry::<span class="built_in">instance</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// create global thread pool if not already exists..</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> &amp;mutex = registry_inst.<span class="built_in">tp_mutex</span>();</span><br><span class="line">        <span class="function">std::lock_guard&lt;std::recursive_mutex&gt; <span class="title">tp_lock</span><span class="params">(mutex)</span></span>;</span><br><span class="line">        <span class="keyword">auto</span> tp = registry_inst.<span class="built_in">get_tp</span>();</span><br><span class="line">        <span class="keyword">if</span> (tp == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            tp = std::<span class="built_in">make_shared</span>&lt;details::thread_pool&gt;(details::default_async_q_size, <span class="number">1U</span>);</span><br><span class="line">            registry_inst.<span class="built_in">set_tp</span>(tp);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> sink = std::<span class="built_in">make_shared</span>&lt;Sink&gt;(std::forward&lt;SinkArgs&gt;(args)...);</span><br><span class="line">        <span class="keyword">auto</span> new_logger = std::<span class="built_in">make_shared</span>&lt;async_logger&gt;(std::<span class="built_in">move</span>(logger_name),                      std::<span class="built_in">move</span>(sink),std::<span class="built_in">move</span>(tp), OverflowPolicy);</span><br><span class="line">        registry_inst.<span class="built_in">initialize_logger</span>(new_logger);</span><br><span class="line">        <span class="keyword">return</span> new_logger;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>工厂根据用户提供的名称以及不同的sink来生产不同的logger，从异步工厂的代码中也可以看出对registry单例的使用。</p><h3 id="一些值得参考的代码片段"><a href="#一些值得参考的代码片段" class="headerlink" title="一些值得参考的代码片段"></a>一些值得参考的代码片段</h3><h4 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h4><h3 id="多线程和性能优化"><a href="#多线程和性能优化" class="headerlink" title="多线程和性能优化"></a>多线程和性能优化</h3><h3 id="测试和benchmark"><a href="#测试和benchmark" class="headerlink" title="测试和benchmark"></a>测试和benchmark</h3><h2 id="spdlog的使用和扩展"><a href="#spdlog的使用和扩展" class="headerlink" title="spdlog的使用和扩展"></a>spdlog的使用和扩展</h2>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 源码阅读 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>2023读书书单</title>
-      <link href="/2023/11/26/notes-of-reading/"/>
-      <url>/2023/11/26/notes-of-reading/</url>
-      
-        <content type="html"><![CDATA[<h3 id="《C-之旅》"><a href="#《C-之旅》" class="headerlink" title="《C++之旅》"></a>《C++之旅》</h3><p>本书是C++之父2023年的新作，包含了C++20标准，总览了C++的重要语言特性，每章开头的小标题会引用一些其他人（也有作者自己）的话来引入该章节的主题，细细体会很有意思，每章结尾也会给出一些建议，以一些比较短又发人深思的话提炼出大师推荐的最佳实践（来源于作者的另外一本书《C++ Core Guidelines》,作者在建议中给出了索引，有兴趣可以直接查阅），读完很有收获。如果你是一名有经验的c++程序员，想要复习一下C++或者想要了解一下新的特性，那么这本书非常适合你！</p><span id="more"></span><p>每章开头的引语和章节内容</p><blockquote><p>第一章：基础 <strong>“我们的首要任务是，干掉所有语言专家！” —–《亨利六世》的第二部分</strong></p><p>第二章：用户自定义类型 <strong>“不必惊慌！”—–道格拉斯·亚当斯</strong></p><p>第三章：模块化 <strong>“管好你自己的事！”—–道格拉斯·亚当斯</strong></p><p>第四章：错误处理 <strong>“我打断你的时候不许打断我。”—–温斯顿·丘吉尔</strong></p><p>第五章：类 <strong>“那些类型一点也不‘抽象’；它们如此真实，就像int和float一样。”—–道格·麦克罗伊</strong></p><p>第六章：基本操作<strong>“我想一种只需要口头许愿出想要做的事就能实现的编程语言。那么，给他一根棒棒糖吧。”—–艾伦·佩里斯</strong></p><p>第七章：模板<strong>“你的畅所欲言之地。”—–本贾尼·斯特劳斯特鲁普</strong></p><p>第八章：概念和泛型编程 <strong>“编程：你必须从有趣的算法开始。”—–Alex Stepanov</strong></p><p>第九章：标准库 <strong>“当无知稍纵即逝时，又何必浪费时间学习呢？”—–霍布斯</strong></p><p>第十章：字符串和正则表达式 <strong>“优先选择标准而非另类。”—–斯特伦克&amp;怀特</strong></p><p>第十一章：输入与输出 <strong>“所见即所得。”—–布莱恩·克尼汉</strong></p><p>第十二章：容器 <strong>“它新颖、独一无二、简单，它必须成功！”—–H·尼尔森</strong></p><p>第十三章：算法 <strong>“若无必要，勿增实体。”—–威廉·奥卡姆</strong></p><p>第十四章：范围 <strong>“只要结论没有被实践验证，最有力的论点也证明不了什么。”—–罗吉尔·培根</strong></p><p>第十五章：指针和容器 <strong>“教育就是做什么，什么时候做，为什么做。训练就是如何去做。”—–理查德·卫斯理·汉明</strong></p><p>第十六章：实用工具 <strong>“能在浪费时间中获得乐趣，就不是浪费时间。” —–伯特兰·罗素</strong></p><p>第十七章：数值计算 <strong>“计算的意义在于洞察力，而非数字本身。”—–理查德·卫斯理·汉明</strong></p><p>​<strong>“……但是对于学生而言，数字是培养洞察力最好的途径。”—–A·罗尔斯顿</strong></p><p>第十八章：并发 <strong>“保持简单：尽可能的简单，但不要过度简化。”—–A·爱因斯坦</strong></p><p>第十九章：历史和兼容性 <strong>“慢慢来！” —–凯撒·奥古斯都</strong></p></blockquote><p>以上。</p><h3 id="《The-Way-To-Go》"><a href="#《The-Way-To-Go》" class="headerlink" title="《The Way To Go》"></a>《The Way To Go》</h3><h3 id="《1984》"><a href="#《1984》" class="headerlink" title="《1984》"></a>《1984》</h3><p>作者是乔治奥威尔，构造了一个虚拟的社会，描述了主角温斯顿在政治重压下如何保持自己的人性里面有一句比较有名的话：“老大哥在看着你。”整本书看完引发了很多思考，对理解社会的本质有帮助，马伯庸曾经写过一篇类似的文章，大概是在2005年写的，如果你喜欢这本书，那么这篇文章也推荐看。另外值得一提的是，苹果公司曾经根据此书中的情节推出了Macintosh的广告。</p><h3 id="《史蒂夫·乔布斯传》"><a href="#《史蒂夫·乔布斯传》" class="headerlink" title="《史蒂夫·乔布斯传》"></a>《史蒂夫·乔布斯传》</h3><p>很遗憾今年才看到本书，作者以一个客观的视角描述了乔布斯不凡的一生，乔布斯不是一个完美的人，极端情绪化、控制欲极强，以及他的“现实扭曲力场”，不过正是这些铸造了早期苹果公司的文化、价值观以及对产品的态度（但这不代表苹果公司没有离谱的设计）。作为一个喜欢使用苹果产品的人，我喜欢苹果产品的统一性带来的美感，以及对细节的把控。这本书是在微信读书看的，从这本书的划线笔记中看到一些有意思的评论，有对乔布斯无脑吹的，也有无脑黑的，觉得实在大可不必，没有人是完美的。</p><h3 id="《嫌疑人X的献身》"><a href="#《嫌疑人X的献身》" class="headerlink" title="《嫌疑人X的献身》"></a>《嫌疑人X的献身》</h3><h3 id="《2001：太空漫游》"><a href="#《2001：太空漫游》" class="headerlink" title="《2001：太空漫游》"></a>《2001：太空漫游》</h3><h3 id="《太白金星有点烦》"><a href="#《太白金星有点烦》" class="headerlink" title="《太白金星有点烦》"></a>《太白金星有点烦》</h3><h3 id="《解忧杂货店》"><a href="#《解忧杂货店》" class="headerlink" title="《解忧杂货店》"></a>《解忧杂货店》</h3><h3 id="《沧浪之水》"><a href="#《沧浪之水》" class="headerlink" title="《沧浪之水》"></a>《沧浪之水》</h3>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 读书笔记 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Mac开发环境搭建</title>
-      <link href="/2023/07/23/dev-config/"/>
-      <url>/2023/07/23/dev-config/</url>
-      
-        <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>刚从WSL下切换到Mac，记录一下Mac平台下的开发环境搭建</p><h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><p>Mac自带的终端工具特性比较少，这里推荐使用Iterm2作为替代，支持不同的主题配色，以及丰富的分屏和显示效果。Mac上默认的shell是zsh，推荐安装<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29obXl6c2gvb2hteXpzaA==">oh-my-zsh<i class="fa fa-external-link-alt"></i></span>作为命令行工具，oh-my-zsh有丰富的主题以及插件，能够大大增加命令行下的工作效率，也可以配置出很好看的终端效果:</p><span id="more"></span><p><img src="/images/dev-config/image-20230723123027340.png" alt="image-20230723123027340"> </p><p>这里使用的主题是<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3JvbWthdHYvcG93ZXJsZXZlbDEwaw==">powerlevel10k<i class="fa fa-external-link-alt"></i></span> ，有两个比较好用的插分别是命令高亮<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3pzaC11c2Vycy96c2gtc3ludGF4LWhpZ2hsaWdodGluZw==">zsh-syntax-highlighting<i class="fa fa-external-link-alt"></i></span>和命令补全<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3pzaC11c2Vycy96c2gtYXV0b3N1Z2dlc3Rpb25z">zsh-autosuggestions<i class="fa fa-external-link-alt"></i></span>，这两个插件也是一些教程中推荐最多的，实际用下来确实很好用，使用方法参考主题官方文档以及插件官方文档。</p><h3 id="软件管理工具"><a href="#软件管理工具" class="headerlink" title="软件管理工具"></a>软件管理工具</h3><p>使用<span class="exturl" data-url="aHR0cHM6Ly9icmV3LnNoLw==">brew<i class="fa fa-external-link-alt"></i></span>作为Mac下的包管理工具，brew官网给出了安装命令，但是在国内的网络环境下安装大概率会由于网络问题安装失败，可使用如下命令安装brew：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ruby -e &quot;$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install)&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>上午脚本会自动替换中科大的源，不需要再手动替换软件下载源，安装好之后使用brew安装tree工具：</p><p><img src="/images/dev-config/image-20230723124702271.png" alt="image-20230723124702271"></p><h3 id="编译工具Xcode"><a href="#编译工具Xcode" class="headerlink" title="编译工具Xcode"></a>编译工具Xcode</h3><p>Mac下如果要使用gcc、make、clang等工具需要安装Xcode工具包，如果你不是ios或者macos等Apple平台的开发者，仅仅想要使用一些命令行工具来做开发，那么推荐安装更小的Xcode Command Line Tools，可使用如下命令安装：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcode-select –install</span><br></pre></td></tr></table></figure>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 环境搭建 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>hello blog</title>
-      <link href="/2023/07/23/first-post/"/>
-      <url>/2023/07/23/first-post/</url>
-      
-        <content type="html"><![CDATA[<h3 id="关于博客本身"><a href="#关于博客本身" class="headerlink" title="关于博客本身"></a>关于博客本身</h3><p>新的博客搭建好了，用的框架是Hexo，托管在GitHub上，这样做的好处是不用去走复杂的备案工作，虽然牺牲了访问速度，但想必不会有太多人访问到:D，因此可以接受。主题使用的是Next，一个比较简洁的主题。</p><span id="more"></span><h3 id="为什么要写"><a href="#为什么要写" class="headerlink" title="为什么要写"></a>为什么要写</h3><p>刘未鹏老师有一篇文章<span class="exturl" data-url="aHR0cDovL21pbmRoYWNrcy5jbi8yMDA5LzAyLzE1L3doeS15b3Utc2hvdWxkLXN0YXJ0LWJsb2dnaW5nLW5vdy8=">为什么你应该（从现在开始就）写博客<i class="fa fa-external-link-alt"></i></span>：</p><blockquote><p><strong>写一个博客有很多好处，却没有任何明显的坏处</strong>。</p><p><strong>用博客的形式来记录下你有价值的思考，会带来很多好处，却没有任何明显的坏处</strong>。</p></blockquote><p>文中列举了写博客的具体好处以及可能会遇到的一些问题并给出了解决方案，非常值得阅读，对我自己而言，把一些东西记录下来能够更好的理解。</p><h3 id="关于内容"><a href="#关于内容" class="headerlink" title="关于内容"></a>关于内容</h3><p>主要以技术文章为主，可能也会有一些读书笔记。</p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-  
-  
+<search>
+  <entry>
+    <title>C++中的拷贝消除和返回值优化</title>
+    <url>/2024/01/27/copy-elision/</url>
+    <content><![CDATA[<p>拷贝消除(copy elision)指的是一项可以避免调用拷贝或移动操作的编译器优化措施，C++通过RVO(Return Value Optimization)和NRVO(Named Return Value Optimization)来达到这一点，RVO表示编译器在函数返回值时可以避免创建临时对象，NRVO表示编译器在需要返回一个具名的局部对象时可以避免调用该对象的拷贝或构造函数。先来看一段代码：</p>
+<span id="more"></span>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">Point</span>() = <span class="keyword">default</span>;</span><br><span class="line">    <span class="built_in">Point</span>(<span class="type">const</span> Point&amp; rhs)</span><br><span class="line">    &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;copy constructor.\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Point <span class="title">func_rvo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Point&#123;&#125;;  <span class="comment">// 1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Point <span class="title">func_nrvo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	  Point ret;</span><br><span class="line">  	<span class="keyword">return</span> ret;      <span class="comment">// 2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span>, <span class="type">char</span>**)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Point a = <span class="built_in">func_rvo</span>();  <span class="comment">// 3</span></span><br><span class="line">  	Point b = <span class="built_in">func_nrvo</span>(); <span class="comment">// 4</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以先猜猜看这段代码使用不同C++版本编译之后的输出是什么？我们先使用C++14编译并运行，输出为空，这里是编译器进行优化了，可以在编译时加上<code>-fno-elide-constructors</code>参数，表示不希望进行拷贝消除，输出为：</p>
+<blockquote>
+<p>copy constructor.<br>copy constructor.<br>copy constructor.<br>copy constructor.</p>
+</blockquote>
+<p>在代码中①②③④中都调用了拷贝函数，很好理解，如果不加额外的编译参数，就不对进行拷贝，这就是编译进行了拷贝消除，在①处发生了RVO，在2处发生了NRVO。</p>
+<p>再使用C++17编译，依旧加上<code>-fno-elide-constructors</code>编译参数，输出为：</p>
+<blockquote>
+<p>copy constructor.</p>
+</blockquote>
+<p>可以发现使用C++17进行编译时，只调用了一次Point的构造函数，为什么？不是已经增加了<code>-fno-elide-constructors</code>吗？而且为什么只调用了一次拷贝构造函数，又是哪里调用的？</p>
+<p>首先，从C++17标准开始，RVO对于编译器不再是建议，而被<span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2xhbmd1YWdlL2NvcHlfZWxpc2lvbg==">强制要求保证<i class="fa fa-external-link-alt"></i></span>，也就是说从C++17开始，编译器不理我们的<code>-fno-elide-constructors</code>参数了。那既然编译器选择了优化，那为啥还是调用了一次拷贝构造函数？这就是第二个问题，答案是标准规定RVO是一定要保证的，但NRVO不是，哪怕在C++17中，NRVO也不是一定被保证的，而代码中②就是NRVO，所以拷贝函数是在这里被调用的。</p>
+]]></content>
+      <tags>
+        <tag>C++</tag>
+        <tag>C++17</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hello blog</title>
+    <url>/2023/07/23/first-post/</url>
+    <content><![CDATA[<h3 id="关于博客本身"><a href="#关于博客本身" class="headerlink" title="关于博客本身"></a>关于博客本身</h3><p>新的博客搭建好了，用的框架是Hexo，托管在GitHub上，这样做的好处是不用去走复杂的备案工作，虽然牺牲了访问速度，但想必不会有太多人访问到:D，因此可以接受。主题使用的是Next，一个比较简洁的主题。</p>
+<span id="more"></span>
+
+<h3 id="为什么要写"><a href="#为什么要写" class="headerlink" title="为什么要写"></a>为什么要写</h3><p>刘未鹏老师有一篇文章<span class="exturl" data-url="aHR0cDovL21pbmRoYWNrcy5jbi8yMDA5LzAyLzE1L3doeS15b3Utc2hvdWxkLXN0YXJ0LWJsb2dnaW5nLW5vdy8=">为什么你应该（从现在开始就）写博客<i class="fa fa-external-link-alt"></i></span>：</p>
+<blockquote>
+<p><strong>写一个博客有很多好处，却没有任何明显的坏处</strong>。</p>
+<p><strong>用博客的形式来记录下你有价值的思考，会带来很多好处，却没有任何明显的坏处</strong>。</p>
+</blockquote>
+<p>文中列举了写博客的具体好处以及可能会遇到的一些问题并给出了解决方案，非常值得阅读，对我自己而言，把一些东西记录下来能够更好的理解。</p>
+<h3 id="关于内容"><a href="#关于内容" class="headerlink" title="关于内容"></a>关于内容</h3><p>主要以技术文章为主，可能也会有一些读书笔记。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Mac开发环境搭建</title>
+    <url>/2023/07/23/dev-config/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>刚从WSL下切换到Mac，记录一下Mac平台下的开发环境搭建</p>
+<h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><p>Mac自带的终端工具特性比较少，这里推荐使用Iterm2作为替代，支持不同的主题配色，以及丰富的分屏和显示效果。Mac上默认的shell是zsh，推荐安装<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29obXl6c2gvb2hteXpzaA==">oh-my-zsh<i class="fa fa-external-link-alt"></i></span>作为命令行工具，oh-my-zsh有丰富的主题以及插件，能够大大增加命令行下的工作效率，也可以配置出很好看的终端效果:</p>
+<span id="more"></span>
+
+<p><img src="/images/dev-config/image-20230723123027340.png" alt="image-20230723123027340"> </p>
+<p>这里使用的主题是<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3JvbWthdHYvcG93ZXJsZXZlbDEwaw==">powerlevel10k<i class="fa fa-external-link-alt"></i></span> ，有两个比较好用的插分别是命令高亮<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3pzaC11c2Vycy96c2gtc3ludGF4LWhpZ2hsaWdodGluZw==">zsh-syntax-highlighting<i class="fa fa-external-link-alt"></i></span>和命令补全<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3pzaC11c2Vycy96c2gtYXV0b3N1Z2dlc3Rpb25z">zsh-autosuggestions<i class="fa fa-external-link-alt"></i></span>，这两个插件也是一些教程中推荐最多的，实际用下来确实很好用，使用方法参考主题官方文档以及插件官方文档。</p>
+<h3 id="软件管理工具"><a href="#软件管理工具" class="headerlink" title="软件管理工具"></a>软件管理工具</h3><p>使用<span class="exturl" data-url="aHR0cHM6Ly9icmV3LnNoLw==">brew<i class="fa fa-external-link-alt"></i></span>作为Mac下的包管理工具，brew官网给出了安装命令，但是在国内的网络环境下安装大概率会由于网络问题安装失败，可使用如下命令安装brew：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/usr/bin/ruby -e &quot;$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install)&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上午脚本会自动替换中科大的源，不需要再手动替换软件下载源，安装好之后使用brew安装tree工具：</p>
+<p><img src="/images/dev-config/image-20230723124702271.png" alt="image-20230723124702271"></p>
+<h3 id="编译工具Xcode"><a href="#编译工具Xcode" class="headerlink" title="编译工具Xcode"></a>编译工具Xcode</h3><p>Mac下如果要使用gcc、make、clang等工具需要安装Xcode工具包，如果你不是ios或者macos等Apple平台的开发者，仅仅想要使用一些命令行工具来做开发，那么推荐安装更小的Xcode Command Line Tools，可使用如下命令安装：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xcode-select –install</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>环境搭建</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2023读书书单</title>
+    <url>/2023/11/26/notes-of-reading/</url>
+    <content><![CDATA[<h3 id="《C-之旅》"><a href="#《C-之旅》" class="headerlink" title="《C++之旅》"></a>《C++之旅》</h3><p>本书是C++之父2023年的新作，包含了C++20标准，总览了C++的重要语言特性，每章开头的小标题会引用一些其他人（也有作者自己）的话来引入该章节的主题，细细体会很有意思，每章结尾也会给出一些建议，以一些比较短又发人深思的话提炼出大师推荐的最佳实践（来源于作者的另外一本书《C++ Core Guidelines》,作者在建议中给出了索引，有兴趣可以直接查阅），读完很有收获。如果你是一名有经验的c++程序员，想要复习一下C++或者想要了解一下新的特性，那么这本书非常适合你！</p>
+<span id="more"></span>
+
+<p>每章开头的引语和章节内容</p>
+<blockquote>
+<p>第一章：基础 <strong>“我们的首要任务是，干掉所有语言专家！” —–《亨利六世》的第二部分</strong></p>
+<p>第二章：用户自定义类型 <strong>“不必惊慌！”—–道格拉斯·亚当斯</strong></p>
+<p>第三章：模块化 <strong>“管好你自己的事！”—–道格拉斯·亚当斯</strong></p>
+<p>第四章：错误处理 <strong>“我打断你的时候不许打断我。”—–温斯顿·丘吉尔</strong></p>
+<p>第五章：类 <strong>“那些类型一点也不‘抽象’；它们如此真实，就像int和float一样。”—–道格·麦克罗伊</strong></p>
+<p>第六章：基本操作<strong>“我想一种只需要口头许愿出想要做的事就能实现的编程语言。那么，给他一根棒棒糖吧。”—–艾伦·佩里斯</strong></p>
+<p>第七章：模板<strong>“你的畅所欲言之地。”—–本贾尼·斯特劳斯特鲁普</strong></p>
+<p>第八章：概念和泛型编程 <strong>“编程：你必须从有趣的算法开始。”—–Alex Stepanov</strong></p>
+<p>第九章：标准库 <strong>“当无知稍纵即逝时，又何必浪费时间学习呢？”—–霍布斯</strong></p>
+<p>第十章：字符串和正则表达式 <strong>“优先选择标准而非另类。”—–斯特伦克&amp;怀特</strong></p>
+<p>第十一章：输入与输出 <strong>“所见即所得。”—–布莱恩·克尼汉</strong></p>
+<p>第十二章：容器 <strong>“它新颖、独一无二、简单，它必须成功！”—–H·尼尔森</strong></p>
+<p>第十三章：算法 <strong>“若无必要，勿增实体。”—–威廉·奥卡姆</strong></p>
+<p>第十四章：范围 <strong>“只要结论没有被实践验证，最有力的论点也证明不了什么。”—–罗吉尔·培根</strong></p>
+<p>第十五章：指针和容器 <strong>“教育就是做什么，什么时候做，为什么做。训练就是如何去做。”—–理查德·卫斯理·汉明</strong></p>
+<p>第十六章：实用工具 <strong>“能在浪费时间中获得乐趣，就不是浪费时间。” —–伯特兰·罗素</strong></p>
+<p>第十七章：数值计算 <strong>“计算的意义在于洞察力，而非数字本身。”—–理查德·卫斯理·汉明</strong></p>
+<p>​	<strong>“……但是对于学生而言，数字是培养洞察力最好的途径。”—–A·罗尔斯顿</strong></p>
+<p>第十八章：并发 <strong>“保持简单：尽可能的简单，但不要过度简化。”—–A·爱因斯坦</strong></p>
+<p>第十九章：历史和兼容性 <strong>“慢慢来！” —–凯撒·奥古斯都</strong></p>
+</blockquote>
+<p>以上。</p>
+<h3 id="《The-Way-To-Go》"><a href="#《The-Way-To-Go》" class="headerlink" title="《The Way To Go》"></a>《The Way To Go》</h3><h3 id="《1984》"><a href="#《1984》" class="headerlink" title="《1984》"></a>《1984》</h3><p>作者是乔治奥威尔，构造了一个虚拟的社会，描述了主角温斯顿在政治重压下如何保持自己的人性里面有一句比较有名的话：“老大哥在看着你。”整本书看完引发了很多思考，对理解社会的本质有帮助，马伯庸曾经写过一篇类似的文章，大概是在2005年写的，如果你喜欢这本书，那么这篇文章也推荐看。另外值得一提的是，苹果公司曾经根据此书中的情节推出了Macintosh的广告。</p>
+<h3 id="《史蒂夫·乔布斯传》"><a href="#《史蒂夫·乔布斯传》" class="headerlink" title="《史蒂夫·乔布斯传》"></a>《史蒂夫·乔布斯传》</h3><p>很遗憾今年才看到本书，作者以一个客观的视角描述了乔布斯不凡的一生，乔布斯不是一个完美的人，极端情绪化、控制欲极强，以及他的“现实扭曲力场”，不过正是这些铸造了早期苹果公司的文化、价值观以及对产品的态度（但这不代表苹果公司没有离谱的设计）。作为一个喜欢使用苹果产品的人，我喜欢苹果产品的统一性带来的美感，以及对细节的把控。这本书是在微信读书看的，从这本书的划线笔记中看到一些有意思的评论，有对乔布斯无脑吹的，也有无脑黑的，觉得实在大可不必，没有人是完美的。</p>
+<h3 id="《嫌疑人X的献身》"><a href="#《嫌疑人X的献身》" class="headerlink" title="《嫌疑人X的献身》"></a>《嫌疑人X的献身》</h3><h3 id="《2001：太空漫游》"><a href="#《2001：太空漫游》" class="headerlink" title="《2001：太空漫游》"></a>《2001：太空漫游》</h3><h3 id="《太白金星有点烦》"><a href="#《太白金星有点烦》" class="headerlink" title="《太白金星有点烦》"></a>《太白金星有点烦》</h3><h3 id="《解忧杂货店》"><a href="#《解忧杂货店》" class="headerlink" title="《解忧杂货店》"></a>《解忧杂货店》</h3><h3 id="《沧浪之水》"><a href="#《沧浪之水》" class="headerlink" title="《沧浪之水》"></a>《沧浪之水》</h3>]]></content>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2024读书书单</title>
+    <url>/2024/01/30/reading-list2024/</url>
+    <content><![CDATA[<h3 id="《Modern-CPP-Programming》"><a href="#《Modern-CPP-Programming》" class="headerlink" title="《Modern-CPP-Programming》"></a>《Modern-CPP-Programming》</h3><p>严格来讲不是一本书，根据作者的介绍是一门<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ZlZGVyaWNvLWJ1c2F0by9Nb2Rlcm4tQ1BQLVByb2dyYW1taW5n">公开课程<i class="fa fa-external-link-alt"></i></span>，这门课程是针对那些已经熟悉C语言和面向对象编程，并希望提高到C++编程熟练水平的人群。作者以PDF的形式维护在GitHub上，包含了1000多页PPT，涵盖了工具、编码约定、项目组织和代码优化等内容。</p>
+<h3 id="《马斯克传》"><a href="#《马斯克传》" class="headerlink" title="《马斯克传》"></a>《马斯克传》</h3><span id="more"></span>
+
+<p>持续阅读中……</p>
+]]></content>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spdlog源码阅读</title>
+    <url>/2023/12/09/spdlog-1/</url>
+    <content><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dhYmltZS9zcGRsb2c=">spdlog<i class="fa fa-external-link-alt"></i></span>是开源社区比较有名的跨平台的现代c++日志库，包含了c++17的特性，可使用<code>head-only</code>也可以编译为库，支持丰富的格式输出，用户也可以自定义格式，此外也支持异步log等等丰富的特性，本文记录spdlog源码阅读过程中的一些理解。</p>
+<span id="more"></span>
+
+<h3 id="代码下载和编译"><a href="#代码下载和编译" class="headerlink" title="代码下载和编译"></a>代码下载和编译</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">clone</span> https://github.com/gabime/spdlog.git</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> spdlog &amp;&amp; <span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cmake .. &amp;&amp; make -j</span></span><br></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt中有很多自定义变量，可以根据需求修改使用。编译之后运行示例应该可以看到如下输出：</p>
+<p><img src="/../images/spdlog-1/Screenshot%202023-12-09%20at%2019.40.18.png" alt="Screenshot 2023-12-09 at 19.40.18"></p>
+<p>另外，spdlog支持使用tcp和udp发送log到远程主机，示例代码中加入了udp测试的log，可以使用nc命令启动一个服务器来验证，默认端口号为11091。</p>
+<p>项目本身的示例没有输出到tcp服务器的示例，我们可以写一个用来初步熟悉spdlog的使用，在spdlog&#x2F;example&#x2F;example.cpp中增加如下代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;spdlog/sinks/tcp_sink.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tcp_example</span><span class="params">()</span> </span>&#123; </span><br><span class="line">    spdlog::<span class="function">sinks::tcp_sink_config <span class="title">cfg</span><span class="params">(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">11092</span>)</span></span>;</span><br><span class="line">    <span class="keyword">auto</span> my_logger = spdlog::<span class="built_in">tcp_logger_mt</span>(<span class="string">&quot;tcplog&quot;</span>, cfg);</span><br><span class="line">    my_logger-&gt;<span class="built_in">set_level</span>(spdlog::level::debug);</span><br><span class="line">    my_logger-&gt;<span class="built_in">info</span>(<span class="string">&quot;hello tcp logger&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在spdlog&#x2F;include&#x2F;spdlog&#x2F;sinks&#x2F;tcp_sink.h中命令spdlog命名空间之内sinks命名空间以外增加以下代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Factory = spdlog::synchronous_factory&gt;</span><br><span class="line"><span class="keyword">inline</span> std::shared_ptr&lt;logger&gt; <span class="built_in">tcp_logger_mt</span>(<span class="type">const</span> std::string &amp;logger_name,</span><br><span class="line">                                             sinks::tcp_sink_config skin_config) &#123;</span><br><span class="line">    <span class="keyword">return</span> Factory::<span class="keyword">template</span> <span class="built_in">create</span>&lt;sinks::tcp_sink_mt&gt;(logger_name, skin_config);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，cfg用来配置tcp的ip和端口，tcp_logger_mt是一个工厂函数，用来生成logger对象，参数是logger的名字以及tcp的配置，create是一个构建同步logger的工厂函数，会在后面的文章中详细分析。</p>
+<p>编译之后（以上代码省略了主函数的调用），使用nc命令模拟tcp服务器接受log，结果如下：</p>
+<p><img src="/../images/spdlog-1/Screenshot%202023-12-09%20at%2020.51.53.png" alt="Screenshot 2023-12-09 at 20.51.53"></p>
+<p>spdlog提供了默认的logger，可以直接通过<code>spdlog::info</code>或者<code>spdlog::debug</code>等等使用默认的logger直接输出需要的log。</p>
+<h3 id="源码结构概览"><a href="#源码结构概览" class="headerlink" title="源码结构概览"></a>源码结构概览</h3><p>spdlog是一个head-only的库，include下的文件结构以及主要的功能如下：</p>
+<p>.<br>└── spdlog<br>    ├── async.h 				&#x2F;&#x2F; 异步logger的生成工厂<br>    ├── async_logger-inl.h	     &#x2F;&#x2F; 异步logger实现<br>    ├── async_logger.h		   &#x2F;&#x2F; 异步logger定义<br>    ├── cfg					&#x2F;&#x2F; 包含一些全局配置，例如logger的等级设定<br>    ├── common-inl.h<br>    ├── common.h			  &#x2F;&#x2F; 一些跨平台的条件设置以及一些枚举类型的定义<br>    ├── details				 &#x2F;&#x2F; 包含了spdlog中使用到的基础功能，例如线程池、全局注册器等等<br>    ├── fmt				      &#x2F;&#x2F; 包含fmt库的内容，fmt是一个格式化输出的开源库<br>    ├── formatter.h			&#x2F;&#x2F; 格式对象<br>    ├── fwd.h	<br>    ├── logger-inl.h<br>    ├── logger.h			      &#x2F;&#x2F; logger基类的定义<br>    ├── pattern_formatter-inl.h<br>    ├── pattern_formatter.h	  &#x2F;&#x2F; 包含一些格式的定义<br>    ├── sinks				   &#x2F;&#x2F; 输出接收器集合，包含了各种类型的输出接收器<br>    ├── spdlog-inl.h<br>    ├── spdlog.h			    &#x2F;&#x2F; 一些全局接口的定义<br>    ├── stopwatch.h		      &#x2F;&#x2F; spdlog的秒表支持<br>    ├── tweakme.h			&#x2F;&#x2F; 提供性能提升的配置，可由用户自定义<br>    └── version.h			   &#x2F;&#x2F; spdlog的版本信息</p>
+<h2 id="核心功能模块"><a href="#核心功能模块" class="headerlink" title="核心功能模块"></a>核心功能模块</h2><p><img src="/../images/spdlog-1/spdlog-2824722.png" alt="spdlog"></p>
+<h3 id="概念介绍"><a href="#概念介绍" class="headerlink" title="概念介绍"></a>概念介绍</h3><h4 id="logger"><a href="#logger" class="headerlink" title="logger"></a>logger</h4><p>logger是spdlog中的重要概念，logger包含了一个或者多个sink对象，并且每个logger可以定义自身的logger等级,用户可以通过logger对象设置其中包含的sink的格式和log等级。</p>
+<h5 id="默认logger"><a href="#默认logger" class="headerlink" title="默认logger"></a>默认logger</h5><p>可以理解为sink的包装器，分别有同步logger和异步logger，logger都有唯一的名字来标识自身（除了<strong>默认logger</strong>），<strong>默认logger</strong>是spdlog提供的一个特殊的logger，目的是使用户不必创建logger就能使用log功能，我们使用spdlog::info等接口时就会调用默认logger来打印，如果默认的logger不符合你的需求，也可以使用全局注册器的单例来设置默认的logger：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">spdlog::details::registry::<span class="built_in">instance</span>().<span class="built_in">set_default_logger</span>(std::shared_ptr&lt;logger&gt; new_default_logger)</span><br></pre></td></tr></table></figure>
+
+<h5 id="logger的管理"><a href="#logger的管理" class="headerlink" title="logger的管理"></a>logger的管理</h5><p>如类图所见，全局注册器（registry是个单例类，主要的职责有两个，一是负责管理所有的logger；二是负责管理spdlog的全局设置，例如全局的log等级以及全局的formatter。logger的创建有多种方式，可以使用spdlog提供的工厂方法来创建，也可以手动创建。</p>
+<p>使用工厂创建：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Create and return a shared_ptr to a multithreaded console logger.</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;spdlog/sinks/stdout_color_sinks.h&quot;</span></span></span><br><span class="line"><span class="keyword">auto</span> console = spdlog::<span class="built_in">stdout_color_mt</span>(<span class="string">&quot;some_unique_name&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>手动创建：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">auto</span> sink = std::<span class="built_in">make_shared</span>&lt;spdlog::sinks::stdout_sink_mt&gt;();</span><br><span class="line"><span class="keyword">auto</span> my_logger = std::<span class="built_in">make_shared</span>&lt;spdlog::logger&gt;(<span class="string">&quot;mylogger&quot;</span>, sink);</span><br><span class="line"></span><br><span class="line">spdlog::<span class="built_in">register_logger</span>(my_logger);</span><br></pre></td></tr></table></figure>
+
+<p>使用工厂创建的logger会自动注册到registry中，手动创建的logger需要自行注册，spdlog支持创建同步和异步logger，对应的工厂方法分别在synchronous_factory.h和async.h中。</p>
+<p>对logger的操作都在registry中，为了方便使用做了一层封装，可以直接使用<code>spdlog::get(logger_name)</code>来获取已经创建的logger，或者使用<code>spdlog::drop(logger_name)</code>来删除一个logger。</p>
+<h4 id="formatter"><a href="#formatter" class="headerlink" title="formatter"></a>formatter</h4><p>格式器，包含了log输出的格式，formatter底层使用了开源库<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ZtdGxpYi9mbXQ=">fmt<i class="fa fa-external-link-alt"></i></span>的格式输出。</p>
+<h4 id="sink"><a href="#sink" class="headerlink" title="sink"></a>sink</h4><p>日志接收器，执行打印动作的实体，从类图中可以看到，sink是一个抽象类，定义了sink对象接口，在spdlog中sink对象被设计为不单独出现，依附于logger对象，因此和logger的关系为组合关系。我们可以看到在sink的派生类中基本都实现了工厂方法的包装函数。<code>spdlog/sinks</code>中提供了多种不同的sink，用户也可以基于sink提供的接口自定义符合需求的sink。</p>
+<h3 id="涉及到的设计模式"><a href="#涉及到的设计模式" class="headerlink" title="涉及到的设计模式"></a>涉及到的设计模式</h3><h4 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h4><p>spdlog中，全局注册器registry被实现为单例模式，方便用户使用一些全局的方法，<span class="exturl" data-url="aHR0cHM6Ly9pc29jcHAuZ2l0aHViLmlvL0NwcENvcmVHdWlkZWxpbmVzL0NwcENvcmVHdWlkZWxpbmVzI2kzLWF2b2lkLXNpbmdsZXRvbnM=">其实单例有一些弊端<i class="fa fa-external-link-alt"></i></span>，但是有时候使用起来很方便又不得不使用，registry的单例实现是现在比较常规的做法：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">singleton</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> singleton&amp; <span class="title">instance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">static</span> singleton instance_;</span><br><span class="line">        <span class="keyword">return</span> instance_;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">singleton</span>(<span class="type">const</span> singleton &amp;rhs) = <span class="keyword">delete</span>;</span><br><span class="line">    singleton &amp;<span class="keyword">operator</span>=(<span class="type">const</span> singleton &amp;rhs) = <span class="keyword">delete</span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line">    ~<span class="built_in">singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>得益于c++11推出的内存模型，静态变量的线程安全性由编译器保证，我们可以不用使用锁来保证单例对象的唯一性。</p>
+<h4 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h4><p>在spdlog中，同步logger和异步logger的创建都使用了工厂方法模式来实现：</p>
+<p>同步logger工厂：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">synchronous_factory</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Sink, <span class="keyword">typename</span>... SinkArgs&gt;</span><br><span class="line">    <span class="function"><span class="type">static</span> std::shared_ptr&lt;spdlog::logger&gt; <span class="title">create</span><span class="params">(std::string logger_name, SinkArgs &amp;&amp;...args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> sink = std::<span class="built_in">make_shared</span>&lt;Sink&gt;(std::forward&lt;SinkArgs&gt;(args)...);</span><br><span class="line">        <span class="keyword">auto</span> new_logger = std::<span class="built_in">make_shared</span>&lt;spdlog::logger&gt;(std::<span class="built_in">move</span>(logger_name), std::<span class="built_in">move</span>(sink));</span><br><span class="line">        details::registry::<span class="built_in">instance</span>().<span class="built_in">initialize_logger</span>(new_logger);</span><br><span class="line">        <span class="keyword">return</span> new_logger;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>异步logger工厂：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;async_overflow_policy OverflowPolicy = async_overflow_policy::block&gt;</span><br><span class="line"><span class="keyword">struct</span> async_factory_impl &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Sink, <span class="keyword">typename</span>... SinkArgs&gt;</span><br><span class="line">    <span class="type">static</span> std::shared_ptr&lt;async_logger&gt; <span class="built_in">create</span>(std::string logger_name, SinkArgs &amp;&amp;...args) &#123;</span><br><span class="line">        <span class="keyword">auto</span> &amp;registry_inst = details::registry::<span class="built_in">instance</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// create global thread pool if not already exists..</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> &amp;mutex = registry_inst.<span class="built_in">tp_mutex</span>();</span><br><span class="line">        <span class="function">std::lock_guard&lt;std::recursive_mutex&gt; <span class="title">tp_lock</span><span class="params">(mutex)</span></span>;</span><br><span class="line">        <span class="keyword">auto</span> tp = registry_inst.<span class="built_in">get_tp</span>();</span><br><span class="line">        <span class="keyword">if</span> (tp == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            tp = std::<span class="built_in">make_shared</span>&lt;details::thread_pool&gt;(details::default_async_q_size, <span class="number">1U</span>);</span><br><span class="line">            registry_inst.<span class="built_in">set_tp</span>(tp);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> sink = std::<span class="built_in">make_shared</span>&lt;Sink&gt;(std::forward&lt;SinkArgs&gt;(args)...);</span><br><span class="line">        <span class="keyword">auto</span> new_logger = std::<span class="built_in">make_shared</span>&lt;async_logger&gt;(std::<span class="built_in">move</span>(logger_name), 		                     std::<span class="built_in">move</span>(sink),std::<span class="built_in">move</span>(tp), OverflowPolicy);</span><br><span class="line">        registry_inst.<span class="built_in">initialize_logger</span>(new_logger);</span><br><span class="line">        <span class="keyword">return</span> new_logger;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>工厂根据用户提供的名称以及不同的sink来生产不同的logger，从异步工厂的代码中也可以看出对registry单例的使用。</p>
+<h3 id="一些值得参考的代码片段"><a href="#一些值得参考的代码片段" class="headerlink" title="一些值得参考的代码片段"></a>一些值得参考的代码片段</h3><h4 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h4><h3 id="多线程和性能优化"><a href="#多线程和性能优化" class="headerlink" title="多线程和性能优化"></a>多线程和性能优化</h3><h3 id="测试和benchmark"><a href="#测试和benchmark" class="headerlink" title="测试和benchmark"></a>测试和benchmark</h3><h2 id="spdlog的使用和扩展"><a href="#spdlog的使用和扩展" class="headerlink" title="spdlog的使用和扩展"></a>spdlog的使用和扩展</h2>]]></content>
+      <tags>
+        <tag>源码阅读</tag>
+      </tags>
+  </entry>
 </search>
